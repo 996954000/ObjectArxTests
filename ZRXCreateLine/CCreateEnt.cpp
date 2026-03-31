@@ -1,0 +1,227 @@
+﻿#include "pch.h"
+#include "CCreateEnt.h"
+#include "CCalculation.h"
+
+/// <summary>
+/// 创建Line
+/// </summary>
+/// <param name="startPoint"></param>
+/// <param name="endPoint"></param>
+/// <returns></returns>
+AcDbObjectId CCreateEnt::CreateLine(AcGePoint3d startPoint, AcGePoint3d endPoint) {
+	
+	AcDbLine* newLine = new AcDbLine(startPoint, endPoint);
+	AcDbObjectId lineId = PostToModelSpace(newLine);
+
+	newLine->close();
+
+	return lineId;
+}
+
+AcDbObjectId CCreateEnt::CreateCircle(AcGePoint3d circleCenter, AcGeVector3d vec, double raidus) {
+
+	AcDbCircle* newCircle = new AcDbCircle(circleCenter, vec, raidus);
+	AcDbObjectId circleId = PostToModelSpace(newCircle);
+	
+	newCircle->close();
+	
+	return circleId;
+}
+
+AcDbObjectId CCreateEnt::CreateCircle(AcGePoint3d circleCenter, double raidus) {
+
+	AcDbCircle* newCircle = new AcDbCircle(circleCenter, AcGeVector3d(0, 0, 1), raidus);
+	AcDbObjectId circleId = PostToModelSpace(newCircle);
+
+	newCircle->close();
+
+	return circleId;
+}
+
+/// <summary>
+/// 三点法做圆【纯抄】
+/// </summary>
+/// <param name="pt1"></param>
+/// <param name="pt2"></param>
+/// <param name="pt3"></param>
+/// <returns></returns>
+AcDbObjectId CCreateEnt::CreateCircle(AcGePoint2d pt1, AcGePoint2d pt2, AcGePoint2d pt3) {
+	// 使用数学方法
+	double xysm, xyse, xy;
+	AcGePoint3d ptCenter;
+	double radius;
+
+	xy = pow(pt1[X], 2) + pow(pt1[Y], 2);
+	xyse = xy - pow(pt3[X], 2) - pow(pt3[Y], 2);
+	xysm = xy - pow(pt2[X], 2) - pow(pt2[Y], 2);
+	xy = (pt1[X] - pt2[X]) * (pt1[Y] - pt3[Y]) - (pt1[X] - pt3[X]) * (pt1[Y] -
+		pt2[Y]);
+
+	// 判断参数有效性
+	if (fabs(xy) < 0.000001)
+	{
+		//AfxMessageBox("所输入的参数无法创建圆形！");
+		return 0;
+	}
+
+	// 获得圆心和半径
+	ptCenter[X] = (xysm * (pt1[Y] - pt3[Y]) - xyse * (pt1[Y] - pt2[Y])) / (2 *
+		xy);
+	ptCenter[Y] = (xyse * (pt1[X] - pt2[X]) - xysm * (pt1[X] - pt3[X])) / (2 *
+		xy);
+	ptCenter[Z] = 0;
+	radius = sqrt((pt1[X] - ptCenter[X]) * (pt1[X] - ptCenter[X]) +
+		(pt1[Y] - ptCenter[Y]) * (pt1[Y] - ptCenter[Y]));
+
+	if (radius < 0.000001)
+	{
+		//AfxMessageBox("半径过小！");
+		return 0;
+	}
+
+	return CCreateEnt::CreateCircle(ptCenter, radius);
+}
+
+AcDbObjectId CCreateEnt::CreateCircle(AcGePoint2d pt1, AcGePoint2d pt2) {
+	AcGePoint2d midPt = CCalculation::GetMidPoint(pt1, pt2);
+	double radius = midPt.distanceTo(pt1);
+
+	return CreateCircle(AcGePoint3d(midPt.x, midPt.y, 0), radius);
+}
+
+AcDbObjectId CCreateEnt::CreateArc(AcGePoint3d center, AcGeVector3d vec, double radius, double startAngle, double endAngle) {
+	AcDbArc* newArc = new AcDbArc(center, vec, radius, startAngle, endAngle);
+	AcDbObjectId arcId = CCreateEnt::PostToModelSpace(newArc);
+	
+	newArc->close();
+	
+	return arcId;
+}
+
+AcDbObjectId CCreateEnt::CreateArc(AcGePoint2d center, double radius, double startAngle, double endAngle) {
+	AcDbArc* newArc = new AcDbArc(CCalculation::Pt2dToPt3d(center), AcGeVector3d(0, 0, 1), radius, startAngle, endAngle);
+	AcDbObjectId arcId = CCreateEnt::PostToModelSpace(newArc);
+
+	newArc->close();
+
+	return arcId;
+}
+
+AcDbObjectId CCreateEnt::CreateArcSCE(AcGePoint2d ptStart, AcGePoint2d ptCenter, AcGePoint2d ptEnd) {
+	double radius = ptStart.distanceTo(ptCenter);
+
+	AcGeVector2d vecStart = ptStart - ptCenter;
+	AcGeVector2d vecEnd = ptEnd - ptCenter;
+
+	double startAngle = vecStart.angle();
+	double endAngle = vecEnd.angle();
+
+	return CreateArc(ptCenter, radius, startAngle, endAngle);
+}
+
+AcDbObjectId CCreateEnt::CreateArc(AcGePoint2d ptStart, AcGePoint2d ptOnArc, AcGePoint2d ptEnd) {
+	AcGeCircArc2d arc2d(ptStart, ptOnArc, ptEnd);
+	AcGePoint2d ptCenter = arc2d.center();
+	double radius = arc2d.radius();
+
+	AcGeVector2d vecStart = ptStart - ptCenter;
+	AcGeVector2d vecEnd = ptEnd - ptCenter;
+
+	double startAngle = vecStart.angle();
+	double endAngle = vecEnd.angle();
+
+	return CreateArc(ptCenter, radius, startAngle, endAngle);
+}
+
+AcDbObjectId CCreateEnt::CreateArc(AcGePoint2d ptStart, AcGePoint2d ptCenter,
+	double angle)
+{
+	// 计算半径
+	double radius = ptCenter.distanceTo(ptStart);
+	// 计算起、终点角度
+	AcGeVector2d vecStart(ptStart.x - ptCenter.x, ptStart.y - ptCenter.y);
+	double startAngle = vecStart.angle();
+	double endAngle = startAngle + angle;
+	// 创建圆弧
+	return CCreateEnt::CreateArc(ptCenter, radius, startAngle, endAngle);
+}
+
+// 创建多段线
+AcDbObjectId CCreateEnt::CreatePolyline(AcGePoint2dArray ptArray, double width) {
+
+	unsigned int aLength = ptArray.length();
+	int i = 0;
+	AcDbPolyline* polyline = new AcDbPolyline(aLength);
+	for (auto v : ptArray) {
+		polyline->addVertexAt(i, v, 0, width, width);
+		i++;
+	}
+
+	AcDbObjectId polyId = CCreateEnt::PostToModelSpace(polyline);
+	polyline->close();
+	return polyId;
+}
+
+// 创建3D多段线
+AcDbObjectId CCreateEnt::CreatePolyline3D(AcGePoint3dArray ptArray) {
+
+	AcDb3dPolyline* polyline3d = new AcDb3dPolyline(k3dSimplePoly, ptArray);
+	AcDbObjectId poly3dId = CCreateEnt::PostToModelSpace(polyline3d);
+
+	polyline3d->close();
+	return poly3dId;
+}
+
+
+// 创建正多边形
+AcDbObjectId CCreateEnt::CreatePolygon(AcGePoint3d basePt, int sideNum, double radius, double rotation, double width) {
+	AcGePoint2dArray ptArray;
+	
+	double perAngle = 2 * CCalculation::PI() / sideNum;
+	for (int i = 0; i < sideNum; i++) {
+		AcGePoint2d pt(basePt.x + radius * cos(rotation + i * perAngle), basePt.y + radius * sin(rotation + i * perAngle));
+		ptArray.append(pt);
+	}
+
+	AcDbObjectId polyId = CCreateEnt::CreatePolyline(ptArray, width);
+	AcDbEntity* pEnt;
+	acdbOpenAcDbEntity(pEnt, polyId, AcDb::kForWrite);
+	
+	if (pEnt->isKindOf(AcDbPolyline::desc()) == Adesk::kTrue) {
+		AcDbPolyline* pPoly = AcDbPolyline::cast(pEnt);
+		if (pPoly != NULL) {
+			pPoly->setClosed(true);
+			pPoly->close();
+		}
+	}
+
+	 return polyId;
+}
+
+// 创建椭圆
+//AcDbObjectId CCreateEnt::CreateEllipse() {
+//	AcDbEllipse* newEllipse = new AcDbEllipse();
+}
+
+/// <summary>
+/// 将实体添加到模型空间
+/// </summary>
+/// <param name="newLine"></param>
+/// <returns></returns>
+AcDbObjectId CCreateEnt::PostToModelSpace(AcDbEntity* newLine)
+{
+	AcDbBlockTable* pBlockTable;
+	acdbHostApplicationServices()->workingDatabase()->getBlockTable(pBlockTable, AcDb::kForRead);
+
+	AcDbBlockTableRecord* pBlockTableRecord;
+	pBlockTable->getAt(ACDB_MODEL_SPACE, pBlockTableRecord, AcDb::kForWrite);
+
+	AcDbObjectId entId;
+	pBlockTableRecord->appendAcDbEntity(entId, newLine);
+
+	pBlockTable->close();
+	pBlockTableRecord->close();
+
+	return entId;
+}
+

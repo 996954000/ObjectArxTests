@@ -1,0 +1,116 @@
+# ========== Visual Studio ==========
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+*.VC.VC.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.aps
+*.pch
+*.pdb
+*.idb
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_i.c
+*_p.c
+*.ncb
+*.plg
+*.opt
+*.vbw
+*.bak
+*.cache
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+# ========== 构建输出（MSVC / 多配置）==========
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+out/
+build/
+cmake-build-*/
+
+# MSBuild
+*.tlog
+*.lastbuildstate
+*.recipe
+FileTracker/
+*.FileListAbsolute.txt
+
+# ========== IntelliSense / 浏览数据库 ==========
+ipch/
+Browse.VC.db*
+
+# ========== NuGet ==========
+**/packages/*
+!**/packages/build/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ========== 测试与覆盖率 ==========
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+*.gcov
+*.gcda
+*.gcno
+
+# ========== 系统与编辑器 ==========
+*.swp
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ========== ObjectARX / ZRX（按需取消注释）==========
+# 默认：构建产物已在 Debug/Release/x64 等目录中被忽略。
+# 若输出在源码目录且想忽略插件本体，取消下面注释：
+# *.arx
+# *.zrx
+# *.crx
+# *.bundle
+
+# 第三方 SDK（若放在仓库内，通常勿提交）
+# ObjectARX*/
+# ZRXSDK*/
+# sdk/

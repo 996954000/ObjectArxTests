@@ -1,0 +1,5 @@
+LIBRARY ""
+DESCRIPTION "Hello ZRX Application."
+EXPORTS
+zcrxEntryPoint PRIVATE
+zcrxGetApiVersion PRIVATE
