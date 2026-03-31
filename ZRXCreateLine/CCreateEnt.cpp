@@ -235,6 +235,21 @@ AcDbObjectId CCreateEnt::CreateEllipse(AcGePoint2d cornerPt1, AcGePoint2d corner
 	return CCreateEnt::CreateEllipse(centerPt, AcGeVector3d(0, 0, 1), majorAxis, ratio);
 }
 
+// 创建样条曲线
+AcDbObjectId CCreateEnt::CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d startTangent, AcGeVector3d endTangent, int order = 4) {
+	
+	// 断言函数，判断阶数是否合法
+	assert(2 <= order && order <= 26);
+
+	AcDbSpline* newSpline = new AcDbSpline(ptArray, startTangent, endTangent, order);
+
+	AcDbObjectId splineId = CCreateEnt::PostToModelSpace(newSpline);
+	return splineId;
+}
+
+AcDbObjectId CCreateEnt::CreateSpline(AcGePoint3dArray ptArray) {
+	return CCreateEnt::CreateSpline(ptArray, AcGeVector3d(0.0, 0.0, 0.0), AcGeVector3d(0.0, 0.0, 0.0), 4);
+}
 /// <summary>
 /// 将实体添加到模型空间
 /// </summary>

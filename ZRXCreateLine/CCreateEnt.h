@@ -30,6 +30,9 @@ public:
 	// 椭圆
 	static AcDbObjectId CreateEllipse(AcGePoint3d centerPt, AcGeVector3d normalVec, AcGeVector3d majorAxis, double ratio, double startAngle, double endAngle);
 	static AcDbObjectId CreateEllipse(AcGePoint2d cornerPt1, AcGePoint2d cornerPt2);
+	
+	static AcDbObjectId CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d startTangent, AcGeVector3d endTangent, int order);
+	static AcDbObjectId CreateSpline(AcGePoint3dArray ptArray);
 
 	// 加载入模型空间
 	static AcDbObjectId PostToModelSpace(AcDbEntity* newLine);

@@ -62,6 +62,19 @@ void CreateEllipse() {
 	CCreateEnt::CreateEllipse(AcGePoint2d(0.0, 0.0), AcGePoint2d(100.0, 50.0));
 }
 
+void CreateSpline() {
+	AcGePoint3dArray ptArray;
+	int order = 5;
+
+	srand(time(0));
+	for (int i = 0; i < order; i++) {
+		ptArray.append(AcGePoint3d(i * getRand(1, 20), i * getRand(1, 30), i * getRand(1, 40)));
+	}
+	AcGeVector3d startTangent(1, 0, 0);
+	AcGeVector3d endTangent(0, 1, 0);
+	CCreateEnt::CreateSpline(ptArray, startTangent, endTangent, order);
+}
+
 void initApp() {
 	acutPrintf(L"\n[HelloZRX] initApp called, registering command...");
 
@@ -115,6 +128,13 @@ void initApp() {
 		CreateEllipse);
 
 	acutPrintf(L"\n[CreateEllipse] addCommand result: %d", retEllipse);
+
+	int retSpline = acedRegCmds->addCommand(L"CreateShape", L"CreateSpline",
+		L"CreateSpline",
+		ACRX_CMD_MODAL,
+		CreateSpline);
+
+	acutPrintf(L"\n[CreateSpline] addCommand result: %d", retSpline);
 }
 
 void unloadApp()
