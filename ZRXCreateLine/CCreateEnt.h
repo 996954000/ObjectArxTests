@@ -42,6 +42,8 @@ public:
 	static AcDbObjectId CreateText(AcGePoint3d position, const ZTCHAR* text, double height, double rotation);
 	static AcDbObjectId CreateMText(const ZTCHAR* contents, AcDbObjectId style = AcDbObjectId::kNull);
 
+	static AcDbObjectId CreateHatch(AcDbObjectIdArray objIds, const ZTCHAR* patName, bool associative);
+
 	// 加载入模型空间
 	static AcDbObjectId PostToModelSpace(AcDbEntity* newLine);
 };

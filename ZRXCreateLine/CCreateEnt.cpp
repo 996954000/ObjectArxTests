@@ -330,6 +330,42 @@ AcDbObjectId CCreateEnt::CreateMText(const ZTCHAR* contents, AcDbObjectId style)
 	return mTextId;
 }
 
+AcDbObjectId CCreateEnt::CreateHatch(AcDbObjectIdArray objIds, const ZTCHAR* patName, bool associative) {
+	// 填充固定流程
+	AcDbHatch* newHatch = new AcDbHatch();
+	// 指定平面
+	newHatch->setNormal(AcGeVector3d(0, 0, 1));
+	// 设置填充对象的关联性
+	newHatch->setAssociative(associative);
+	// 指定填充图案
+	newHatch->setPattern(AcDbHatch::kPreDefined, patName);
+	// 添加填充边界
+	newHatch->appendLoop(AcDbHatch::kExternal, objIds);
+	// 显示填充对象
+	newHatch->evaluateHatch();
+	// 添加到模型空间
+	AcDbObjectId hatchId = CCreateEnt::PostToModelSpace(newHatch);
+	
+	// 如果是关联性的填充，将填充对象与边界绑定，以便使其能获得边界
+	if (associative) {
+		// 遍历边界对象数组 绑定永久反应器
+		AcDbEntity* pEnt;
+		for (auto id : objIds) {
+			acdbOpenAcDbEntity(pEnt, id, AcDb::kForWrite);
+			if (pEnt->isKindOf(AcDbCurve::desc()) == Adesk::kTrue) {
+				pEnt->addPersistentReactor(hatchId);
+			}
+
+			pEnt->close();
+		}
+	}
+	
+	newHatch->close();
+
+	return hatchId;
+}
+
+
 /// <summary>
 /// 将实体添加到模型空间
 /// </summary>

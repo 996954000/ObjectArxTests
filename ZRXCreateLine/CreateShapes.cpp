@@ -119,6 +119,31 @@ void CreateText() {
 	CCreateEnt::CreateMText(_T("MText多行文本"));
 }
 
+void CreateHatch() {
+	ads_name ss;
+	int rt = acedSSGet(NULL, NULL, NULL, NULL, ss);
+
+	AcDbObjectIdArray objIds;
+
+	// 根据选中对象获取边界曲线的ObjectIds
+	if (rt == RTNORM) {
+		Adesk::Int32 length;
+		acedSSLength(ss, &length);
+
+		for (int i = 0; i < length; i++) {
+			ads_name ent;
+			acedSSName(ss, i, ent);
+			AcDbObjectId entId;
+			acdbGetObjectId(entId, ent);
+			objIds.append(entId);
+		}
+	}
+
+	acedSSFree(ss); // 释放选择集
+
+	CCreateEnt::CreateHatch(objIds, _T("SOLID"), true);
+}
+
 void initApp() {
 	acutPrintf(L"\n[HelloZRX] initApp called, registering command...");
 
@@ -193,6 +218,13 @@ void initApp() {
 		CreateText);
 
 	acutPrintf(L"\n[CreateText] addCommand result: %d", retText);
+
+	int retHatch = acedRegCmds->addCommand(L"CreateShape", L"CreateHatch",
+		L"CreateHatch",
+		ACRX_CMD_MODAL,
+		CreateHatch);
+
+	acutPrintf(L"\n[CreateHatch] addCommand result: %d", retHatch);
 }
 
 void unloadApp()
