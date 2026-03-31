@@ -31,10 +31,16 @@ public:
 	static AcDbObjectId CreateEllipse(AcGePoint3d centerPt, AcGeVector3d normalVec, AcGeVector3d majorAxis, double ratio, double startAngle, double endAngle);
 	static AcDbObjectId CreateEllipse(AcGePoint2d cornerPt1, AcGePoint2d cornerPt2);
 	
+	// 样条曲线
 	static AcDbObjectId CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d startTangent, AcGeVector3d endTangent, int order);
 	static AcDbObjectId CreateSpline(AcGePoint3dArray ptArray);
 
+	// 面域
 	static AcDbObjectIdArray CreateRegion(AcDbObjectIdArray curvesId);
+
+	// 文本
+	static AcDbObjectId CreateText(AcGePoint3d position, const ZTCHAR* text, double height, double rotation);
+	static AcDbObjectId CreateMText(const ZTCHAR* contents, AcDbObjectId style = AcDbObjectId::kNull);
 
 	// 加载入模型空间
 	static AcDbObjectId PostToModelSpace(AcDbEntity* newLine);

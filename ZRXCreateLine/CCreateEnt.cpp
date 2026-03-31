@@ -244,6 +244,8 @@ AcDbObjectId CCreateEnt::CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d sta
 	AcDbSpline* newSpline = new AcDbSpline(ptArray, startTangent, endTangent, order);
 
 	AcDbObjectId splineId = CCreateEnt::PostToModelSpace(newSpline);
+	newSpline->close();
+
 	return splineId;
 }
 
@@ -297,6 +299,35 @@ AcDbObjectIdArray CCreateEnt::CreateRegion(AcDbObjectIdArray curvesId) {
 	}
 
 	return regionIds;
+}
+
+// 添加文本
+//const ZcGePoint3d& position,
+//const ZTCHAR* text,
+//ZcDbObjectId        style = ZcDbObjectId::kNull,
+//double              height = 0,
+//double              rotation = 0);
+
+AcDbObjectId CCreateEnt::CreateText(AcGePoint3d position, const ZTCHAR* text, double height, double rotation) {
+	
+	AcDbText* newText = new AcDbText(position, text, AcDbObjectId::kNull, height, rotation);
+
+	AcDbObjectId textId = CCreateEnt::PostToModelSpace(newText);
+	newText->close();
+
+	return textId;
+}
+
+AcDbObjectId CCreateEnt::CreateMText(const ZTCHAR* contents, AcDbObjectId style) {
+	AcDbMText* newMText = new AcDbMText();
+	newMText->setTextStyle(AcDbObjectId::kNull);
+	newMText->setContents(contents);
+	newMText->setColumnHeight(50, 50);
+
+	AcDbObjectId mTextId = CCreateEnt::PostToModelSpace(newMText);
+	newMText->close();
+
+	return mTextId;
 }
 
 /// <summary>

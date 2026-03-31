@@ -75,6 +75,7 @@ void CreateSpline() {
 	CCreateEnt::CreateSpline(ptArray, startTangent, endTangent, order);
 }
 
+// 创建面域
 void CreateRegion() {
 	// 选择集获取用户选中对象
 	ads_name ss;
@@ -111,6 +112,11 @@ void CreateRegion() {
 	{
 		acutPrintf(_T("\n创建0个面域！"));
 	}
+}
+
+void CreateText() {
+	CCreateEnt::CreateText(AcGePoint3d(0.0, 0.0, 0.0), _T("Text文本"), 500, 0.0);
+	CCreateEnt::CreateMText(_T("MText多行文本"));
 }
 
 void initApp() {
@@ -180,6 +186,13 @@ void initApp() {
 		CreateRegion);
 
 	acutPrintf(L"\n[CreateRegion] addCommand result: %d", retRegion);
+
+	int retText = acedRegCmds->addCommand(L"CreateShape", L"CreateText",
+		L"CreateText",
+		ACRX_CMD_MODAL,
+		CreateText);
+
+	acutPrintf(L"\n[CreateText] addCommand result: %d", retText);
 }
 
 void unloadApp()
