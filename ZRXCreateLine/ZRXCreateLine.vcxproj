@@ -169,6 +169,7 @@
     <ClInclude Include="CCalculation.h" />
     <ClInclude Include="CCreateEnt.h" />
     <ClInclude Include="CModifyEnt.h" />
+    <ClInclude Include="CreateShapes.h" />
     <ClInclude Include="HCreateShapes.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />

@@ -44,6 +44,23 @@ public:
 
 	static AcDbObjectId CreateHatch(AcDbObjectIdArray objIds, const ZTCHAR* patName, bool associative);
 
+	// 创建对齐标注
+	static AcDbObjectId CreateDimAligned(const ZcGePoint3d& xLine1Point, const ZcGePoint3d& xLine2Point, const ZcGePoint3d& dimLinePoint, const ZTCHAR* dimText, ZcDbObjectId dimStyle = AcDbObjectId::kNull);
+	static AcDbObjectId CreateDimAligned(const ZcGePoint3d& xLine1Point, const ZcGePoint3d& xLine2Point, const ZcGePoint3d& dimLinePoint, const ZTCHAR* dimText, AcGeVector3d textOffset, ZcDbObjectId dimSstyle = AcDbObjectId::kNull);
+
+	// 转角标注
+	static AcDbObjectId CreateDimRotated(double rotation, const AcGePoint3d& xLine1Point, const AcGePoint3d& xLine2Point, const AcGePoint3d& dimLinePoint, const ZTCHAR* dimText, ZcDbObjectId dimStyle = AcDbObjectId::kNull);
+
+	// 半径标注
+	static AcDbObjectId CreateDimRadial(const AcGePoint3d& center, const AcGePoint3d& chordPoint, double leaderLength, const ZTCHAR* dimText = _T(""), ZcDbObjectId dimStyle = AcDbObjectId::kNull);
+
+	static AcDbObjectId CreateDimDiametric(const AcGePoint3d& chordPoint, const AcGePoint3d& farChordPoint, double leaderLength, const ZTCHAR* dimText, ZcDbObjectId dimStyle = AcDbObjectId::kNull);
+
+	// 两线角度标注
+	static AcDbObjectId CreateDim2Angular(const AcGePoint3d& xLine1Start, const AcGePoint3d& xLine1End, const AcGePoint3d& xLine2Start, const AcGePoint3d& xLine2End, const AcGePoint3d& arcPoint, const ZTCHAR* dimText, ZcDbObjectId dimStyle = AcDbObjectId::kNull);
+	// 三点角度标注
+	static AcDbObjectId CreateDim3Angular(const AcGePoint3d& centerPoint, const AcGePoint3d& xLine1Point, const AcGePoint3d& xLine2Point, const AcGePoint3d& arcPoint, const ZTCHAR* dimText = _T(""), ZcDbObjectId dimStyle = AcDbObjectId::kNull);
+
 	// 加载入模型空间
 	static AcDbObjectId PostToModelSpace(AcDbEntity* newLine);
 };

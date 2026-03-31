@@ -13,8 +13,6 @@ AcDbObjectId CCreateEnt::CreateLine(AcGePoint3d startPoint, AcGePoint3d endPoint
 	AcDbLine* newLine = new AcDbLine(startPoint, endPoint);
 	AcDbObjectId lineId = PostToModelSpace(newLine);
 
-	newLine->close();
-
 	return lineId;
 }
 
@@ -23,8 +21,6 @@ AcDbObjectId CCreateEnt::CreateCircle(AcGePoint3d circleCenter, AcGeVector3d vec
 	AcDbCircle* newCircle = new AcDbCircle(circleCenter, vec, raidus);
 	AcDbObjectId circleId = PostToModelSpace(newCircle);
 	
-	newCircle->close();
-	
 	return circleId;
 }
 
@@ -32,8 +28,6 @@ AcDbObjectId CCreateEnt::CreateCircle(AcGePoint3d circleCenter, double raidus) {
 
 	AcDbCircle* newCircle = new AcDbCircle(circleCenter, AcGeVector3d(0, 0, 1), raidus);
 	AcDbObjectId circleId = PostToModelSpace(newCircle);
-
-	newCircle->close();
 
 	return circleId;
 }
@@ -93,16 +87,12 @@ AcDbObjectId CCreateEnt::CreateArc(AcGePoint3d center, AcGeVector3d vec, double 
 	AcDbArc* newArc = new AcDbArc(center, vec, radius, startAngle, endAngle);
 	AcDbObjectId arcId = CCreateEnt::PostToModelSpace(newArc);
 	
-	newArc->close();
-	
 	return arcId;
 }
 
 AcDbObjectId CCreateEnt::CreateArc(AcGePoint2d center, double radius, double startAngle, double endAngle) {
 	AcDbArc* newArc = new AcDbArc(CCalculation::Pt2dToPt3d(center), AcGeVector3d(0, 0, 1), radius, startAngle, endAngle);
 	AcDbObjectId arcId = CCreateEnt::PostToModelSpace(newArc);
-
-	newArc->close();
 
 	return arcId;
 }
@@ -158,7 +148,7 @@ AcDbObjectId CCreateEnt::CreatePolyline(AcGePoint2dArray ptArray, double width) 
 	}
 
 	AcDbObjectId polyId = CCreateEnt::PostToModelSpace(polyline);
-	polyline->close();
+
 	return polyId;
 }
 
@@ -168,7 +158,6 @@ AcDbObjectId CCreateEnt::CreatePolyline3D(AcGePoint3dArray ptArray) {
 	AcDb3dPolyline* polyline3d = new AcDb3dPolyline(k3dSimplePoly, ptArray);
 	AcDbObjectId poly3dId = CCreateEnt::PostToModelSpace(polyline3d);
 
-	polyline3d->close();
 	return poly3dId;
 }
 
@@ -215,8 +204,6 @@ AcDbObjectId CCreateEnt::CreateEllipse(AcGePoint3d centerPt, AcGeVector3d normal
 
 	AcDbObjectId ellipseId = CCreateEnt::PostToModelSpace(newEllipse);
 	
-	newEllipse->close();
-
 	return ellipseId;
 }
 
@@ -244,7 +231,6 @@ AcDbObjectId CCreateEnt::CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d sta
 	AcDbSpline* newSpline = new AcDbSpline(ptArray, startTangent, endTangent, order);
 
 	AcDbObjectId splineId = CCreateEnt::PostToModelSpace(newSpline);
-	newSpline->close();
 
 	return splineId;
 }
@@ -313,7 +299,6 @@ AcDbObjectId CCreateEnt::CreateText(AcGePoint3d position, const ZTCHAR* text, do
 	AcDbText* newText = new AcDbText(position, text, AcDbObjectId::kNull, height, rotation);
 
 	AcDbObjectId textId = CCreateEnt::PostToModelSpace(newText);
-	newText->close();
 
 	return textId;
 }
@@ -325,7 +310,6 @@ AcDbObjectId CCreateEnt::CreateMText(const ZTCHAR* contents, AcDbObjectId style)
 	newMText->setColumnHeight(50, 50);
 
 	AcDbObjectId mTextId = CCreateEnt::PostToModelSpace(newMText);
-	newMText->close();
 
 	return mTextId;
 }
@@ -360,18 +344,125 @@ AcDbObjectId CCreateEnt::CreateHatch(AcDbObjectIdArray objIds, const ZTCHAR* pat
 		}
 	}
 	
-	newHatch->close();
-
 	return hatchId;
 }
 
+/// <summary>
+/// 添加对齐标注
+/// </summary>
+/// <param name="xLine1Point"> 第一条尺寸边界线的起点 </param>
+/// <param name="xLine2Point"> 第二条尺寸边界线的起点 </param>
+/// <param name="dimLinePoint"> 通过尺寸线的一点 </param>
+/// <param name="dimText"> 标注文字 </param>
+/// <param name="dimStyle"> 文字样式 </param>
+/// <returns></returns>
+AcDbObjectId CCreateEnt::CreateDimAligned(const ZcGePoint3d& xLine1Point, const ZcGePoint3d& xLine2Point, const ZcGePoint3d& dimLinePoint,
+	const ZTCHAR* dimText, ZcDbObjectId dimStyle) {
+
+	AcDbAlignedDimension* newAlignedDim = new AcDbAlignedDimension(xLine1Point, xLine2Point, dimLinePoint, dimText, dimStyle);
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newAlignedDim);
+
+	return dimId;
+}
+
+// 带标注文字偏移量
+AcDbObjectId CCreateEnt::CreateDimAligned(const ZcGePoint3d& xLine1Point, const ZcGePoint3d& xLine2Point, const ZcGePoint3d& dimLinePoint,
+	const ZTCHAR* dimText, AcGeVector3d textOffset, ZcDbObjectId dimStyle) {
+
+	AcDbAlignedDimension* newAlignedDim = new AcDbAlignedDimension(xLine1Point, xLine2Point, dimLinePoint, dimText, dimStyle);
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newAlignedDim);
+	
+	AcDbEntity* pEnt;
+	acdbOpenAcDbEntity(pEnt, dimId, AcDb::kForWrite);
+
+	AcDbAlignedDimension* pDim = static_cast<AcDbAlignedDimension*>(pEnt);
+
+	// 设置标注文本偏移量
+	if (pDim != NULL) {
+		// 指定标注文本移动时尺寸线的移动策略，这里指定为尺寸线不动，在文字和尺寸线之间加箭头
+		pDim->setDimtmove(1);
+
+		AcGePoint3d textPos = pDim->textPosition();
+		textPos = textPos + textOffset;
+		pDim->setTextPosition(textPos);
+	}
+
+	pEnt->close();
+}
+
+// 转角标注
+AcDbObjectId CCreateEnt::CreateDimRotated(double rotation, const AcGePoint3d& xLine1Point, const AcGePoint3d& xLine2Point,
+	 const AcGePoint3d& dimLinePoint, const ZTCHAR* dimText, ZcDbObjectId dimStyle) {
+
+	AcDbRotatedDimension* newRotatedDim = new AcDbRotatedDimension(rotation, xLine1Point, xLine2Point, dimLinePoint, dimText, dimStyle);
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newRotatedDim);
+
+	return dimId;
+}
+
+// 半径标注
+AcDbObjectId CCreateEnt::CreateDimRadial(const AcGePoint3d& center, const AcGePoint3d& chordPoint,
+	double leaderLength, const ZTCHAR* dimText, ZcDbObjectId dimStyle) {
+	AcDbRadialDimension* newRadialDim = new AcDbRadialDimension(center, chordPoint, leaderLength, dimText, dimStyle);
+
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newRadialDim);
+
+	return dimId;
+}
+
+// 直径标注
+//ZcDbDiametricDimension(
+//	const ZcGePoint3d& chordPoint,
+//	const ZcGePoint3d& farChordPoint,
+//	double             leaderLength,
+//	const ZTCHAR* dimText = NULL,
+//	ZcDbObjectId       dimStyle = ZcDbObjectId::kNull);
+AcDbObjectId CCreateEnt::CreateDimDiametric(const AcGePoint3d& chordPoint, const AcGePoint3d& farChordPoint,
+	double leaderLength, const ZTCHAR* dimText, ZcDbObjectId dimStyle) {
+	AcDbDiametricDimension* newDiaDim = new AcDbDiametricDimension(chordPoint, farChordPoint, leaderLength, dimText, dimStyle);
+
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newDiaDim);
+
+	return dimId;
+}
+
+// 角度标注[2line 两线角度标注]
+//ZcDb2LineAngularDimension(
+//	const ZcGePoint3d& xLine1Start,
+//	const ZcGePoint3d& xLine1End,
+//	const ZcGePoint3d& xLine2Start,
+//	const ZcGePoint3d& xLine2End,
+//	const ZcGePoint3d& arcPoint,
+//	const ZTCHAR* dimText = NULL,
+//	ZcDbObjectId       dimStyle = ZcDbObjectId::kNull);
+AcDbObjectId CCreateEnt::CreateDim2Angular(const AcGePoint3d& xLine1Start, const AcGePoint3d& xLine1End,
+	 const AcGePoint3d& xLine2Start, const AcGePoint3d& xLine2End,
+	  const AcGePoint3d& arcPoint, const ZTCHAR* dimText, ZcDbObjectId dimStyle) {
+	AcDb2LineAngularDimension* newAngDim = new AcDb2LineAngularDimension(xLine1Start, xLine1End, xLine2Start, xLine2End, arcPoint, dimText, dimStyle);
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newAngDim);
+	return dimId;
+}
+// 角度标注[3Point 三点角度标注]
+//ZcDb3PointAngularDimension(
+//	const ZcGePoint3d& centerPoint,
+//	const ZcGePoint3d& xLine1Point,
+//	const ZcGePoint3d& xLine2Point,
+//	const ZcGePoint3d& arcPoint,
+//	const ZTCHAR* dimText = NULL,
+//	ZcDbObjectId       dimStyle = ZcDbObjectId::kNull);
+AcDbObjectId CCreateEnt::CreateDim3Angular(const AcGePoint3d& centerPoint, const AcGePoint3d& xLine1Point, const AcGePoint3d& xLine2Point,
+	 const AcGePoint3d& arcPoint, const ZTCHAR* dimText, ZcDbObjectId dimStyle) {
+	AcDb3PointAngularDimension* newAngDim = new AcDb3PointAngularDimension(centerPoint, xLine1Point, xLine2Point, arcPoint, dimText, dimStyle);
+	AcDbObjectId dimId = CCreateEnt::PostToModelSpace(newAngDim);
+	return dimId;
+}
 
 /// <summary>
 /// 将实体添加到模型空间
 /// </summary>
 /// <param name="newLine"></param>
 /// <returns></returns>
-AcDbObjectId CCreateEnt::PostToModelSpace(AcDbEntity* newLine)
+AcDbObjectId CCreateEnt::PostToModelSpace(AcDbEntity* pEnt)
 {
 	AcDbBlockTable* pBlockTable;
 	acdbHostApplicationServices()->workingDatabase()->getBlockTable(pBlockTable, AcDb::kForRead);
@@ -380,10 +471,11 @@ AcDbObjectId CCreateEnt::PostToModelSpace(AcDbEntity* newLine)
 	pBlockTable->getAt(ACDB_MODEL_SPACE, pBlockTableRecord, AcDb::kForWrite);
 
 	AcDbObjectId entId;
-	pBlockTableRecord->appendAcDbEntity(entId, newLine);
+	pBlockTableRecord->appendAcDbEntity(entId, pEnt);
 
 	pBlockTable->close();
 	pBlockTableRecord->close();
+	pEnt->close();
 
 	return entId;
 }

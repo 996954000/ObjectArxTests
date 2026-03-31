@@ -2,6 +2,7 @@
 #include "HCreateShapes.h"
 #include "CCreateEnt.h"
 #include "CModifyEnt.h"
+#include "CreateShapes.h"
 
 
 void CreateLine() {
@@ -144,11 +145,86 @@ void CreateHatch() {
 	CCreateEnt::CreateHatch(objIds, _T("SOLID"), true);
 }
 
+void CreateAlignedDim() {
+
+	CCreateEnt::CreateDimAligned(AcGePoint3d(0.0, 0.0, 0.0), AcGePoint3d(50.0, 50.0, 0.0), AcGePoint3d(25.0, 25.0, 25.0), _T("对齐标注"),
+		AcGeVector3d(10.0, 10.0, 0.0));
+}
+
+void CreateRotateDim() {
+	CCreateEnt::CreateDimRotated(45.0, AcGePoint3d(0.0, 0.0, 0.0), AcGePoint3d(-50.0, -50.0, 0.0), AcGePoint3d(-25.0, -25.0, 25.0), _T("转角标注"));
+}
+
+void CreateRadialDim() {
+	AcGePoint3d center(0.0, 0.0, 0.0);
+	AcGePoint3d chordPoint(50.0, 20.0, 0.0);
+	CCreateEnt::CreateDimRadial(center, chordPoint, 5.0, _T("半径标注"));
+}
+
+void CreateDiametricDim() {
+	AcGePoint3d chordPoint(0.0, 0.0, 0.0);
+	AcGePoint3d farChordPoint(30.0, 20.0, 0.0);
+	CCreateEnt::CreateDimDiametric(chordPoint, farChordPoint, 5.0, _T("直径标注"));
+}
+
+void CreateAngularDim() {
+	// 使用CreateDim2Angular函数生成角度标注
+	CCreateEnt::CreateDim2Angular(
+		AcGePoint3d(0.0, 0.0, 0.0),      // xLine1Start
+		AcGePoint3d(60.0, 0.0, 0.0),      // xLine1End
+		AcGePoint3d(0.0, 0.0, 0.0),      // xLine2Start
+		AcGePoint3d(0.0, 60.0, 0.0),      // xLine2End
+		AcGePoint3d(20.0, 20.0, 0.0),     // arcPoint
+		_T("两线角度标注")                 // dimText
+	);
+    // 使用CreateDim2Angular函数通过三点生成角度标注
+    // 例如，三点分别为A(0,0,0), B(60,0,0), C(0,60,0)
+    // 以A为角点，AB, AC两条边
+    CCreateEnt::CreateDim2Angular(
+        AcGePoint3d(0.0, 0.0, 0.0),       // xLine1Start: A
+        AcGePoint3d(60.0, 0.0, 0.0),      // xLine1End:   B
+        AcGePoint3d(0.0, 0.0, 0.0),       // xLine2Start: A
+        AcGePoint3d(0.0, 60.0, 0.0),      // xLine2End:   C
+        AcGePoint3d(25.0, 25.0, 0.0),     // arcPoint: 用于确定角度弧线的位置
+        _T("三点角度标注")                 // dimText
+    );
+}
+
 void initApp() {
 	acutPrintf(L"\n[HelloZRX] initApp called, registering command...");
 
 	// 命令组名称、命令的国际名称、命令的本国名称、命令的类型和指向实现函数的指针
 	// 最后的参数需要是无返回值无参数的函数指针
+	AddCreatShapesCommand();
+
+	int retAlignedDim = acedRegCmds->addCommand(L"CreateDims", L"CreateAlignedDim",
+		L"CreateAlignedDim",
+		ACRX_CMD_MODAL,
+		CreateAlignedDim);
+
+	int retRotateDim = acedRegCmds->addCommand(L"CreateDims", L"CreateRotateDim",
+		L"CreateRotateDim",
+		ACRX_CMD_MODAL,
+		CreateRotateDim);
+
+	int retRadialDim = acedRegCmds->addCommand(L"CreateDims", L"CreateRadialDim",
+		L"CreateRadialDim",
+		ACRX_CMD_MODAL,
+		CreateRadialDim);
+
+	int retDiametricDim = acedRegCmds->addCommand(L"CreateDims", L"CreateDiametricDim",
+		L"CreateDiametricDim",
+		ACRX_CMD_MODAL,
+		CreateDiametricDim);
+
+	int retAngularDim = acedRegCmds->addCommand(L"CreateDims", L"CreateAngularDim",
+		L"CreateAngularDim",
+		ACRX_CMD_MODAL,
+		CreateAngularDim);
+}
+
+void AddCreatShapesCommand()
+{
 	int retLine = acedRegCmds->addCommand(L"CreateShape", L"CreateLine",
 		L"CreateLine",
 		ACRX_CMD_MODAL,
@@ -231,6 +307,7 @@ void unloadApp()
 {
 	//删除命令组
 	acedRegCmds->removeGroup(L"CreateShape");
+	acedRegCmds->removeGroup(L"CreateDims");
 }
 
 extern "C" AcRx::AppRetCode
