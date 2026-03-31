@@ -198,9 +198,41 @@ AcDbObjectId CCreateEnt::CreatePolygon(AcGePoint3d basePt, int sideNum, double r
 	 return polyId;
 }
 
-// 创建椭圆
-//AcDbObjectId CCreateEnt::CreateEllipse() {
-//	AcDbEllipse* newEllipse = new AcDbEllipse();
+/// <summary>
+/// 创建椭圆
+/// </summary>
+/// <param name="centerPt"></param>
+/// <param name="normalVec"></param>
+/// <param name="majorAxis">长轴矢量</param>
+/// <param name="ratio">长短轴比(0为线 1为圆)</param>
+/// <param name="startAngle"></param>
+/// <param name="endAngle">截取为椭圆弧的起始角度和终止角度</param>
+/// <returns></returns>
+AcDbObjectId CCreateEnt::CreateEllipse(AcGePoint3d centerPt, AcGeVector3d normalVec, AcGeVector3d majorAxis, double ratio, 
+	double startAngle = 0.0, double endAngle = 6.28318530717958647692) {
+
+	AcDbEllipse* newEllipse = new AcDbEllipse(centerPt, normalVec, majorAxis, ratio, startAngle, endAngle);
+
+	AcDbObjectId ellipseId = CCreateEnt::PostToModelSpace(newEllipse);
+	
+	newEllipse->close();
+
+	return ellipseId;
+}
+
+/// <summary>
+/// 根据外接矩形创建椭圆
+/// </summary>
+/// <param name="cornerPt1">左上角点</param>
+/// <param name="cornerPt2">右下角点</param>
+/// <returns></returns>
+AcDbObjectId CCreateEnt::CreateEllipse(AcGePoint2d cornerPt1, AcGePoint2d cornerPt2){
+	AcGePoint3d centerPt((cornerPt1.x + cornerPt2.x) / 2, (cornerPt1.y + cornerPt2.y) / 2, 0);
+	AcGeVector3d majorAxis(fabs(cornerPt2.x - cornerPt1.x) / 2, 0.0, 0.0);
+
+	double ratio = fabs(cornerPt2.y - cornerPt1.y) / fabs(cornerPt2.x - cornerPt1.x);
+
+	return CCreateEnt::CreateEllipse(centerPt, AcGeVector3d(0, 0, 1), majorAxis, ratio);
 }
 
 /// <summary>

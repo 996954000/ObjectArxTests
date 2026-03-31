@@ -58,6 +58,10 @@ void CreatePolygon() {
 	CCreateEnt::CreatePolygon(basePt, sideNum, radius, rotation, width);
 }
 
+void CreateEllipse() {
+	CCreateEnt::CreateEllipse(AcGePoint2d(0.0, 0.0), AcGePoint2d(100.0, 50.0));
+}
+
 void initApp() {
 	acutPrintf(L"\n[HelloZRX] initApp called, registering command...");
 
@@ -104,6 +108,13 @@ void initApp() {
 		CreatePolygon);
 
 	acutPrintf(L"\n[CreatePolygon] addCommand result: %d", retPolygon);
+
+	int retEllipse = acedRegCmds->addCommand(L"CreateShape", L"CreateEllipse",
+		L"CreateEllipse",
+		ACRX_CMD_MODAL,
+		CreateEllipse);
+
+	acutPrintf(L"\n[CreateEllipse] addCommand result: %d", retEllipse);
 }
 
 void unloadApp()

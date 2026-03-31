@@ -28,6 +28,8 @@ public:
 	static AcDbObjectId CreatePolygon(AcGePoint3d basePt, int sideNum, double radius, double rotation, double width);
 	
 	// 椭圆
+	static AcDbObjectId CreateEllipse(AcGePoint3d centerPt, AcGeVector3d normalVec, AcGeVector3d majorAxis, double ratio, double startAngle, double endAngle);
+	static AcDbObjectId CreateEllipse(AcGePoint2d cornerPt1, AcGePoint2d cornerPt2);
 
 	// 加载入模型空间
 	static AcDbObjectId PostToModelSpace(AcDbEntity* newLine);
