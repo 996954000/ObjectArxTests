@@ -34,6 +34,8 @@ public:
 	static AcDbObjectId CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d startTangent, AcGeVector3d endTangent, int order);
 	static AcDbObjectId CreateSpline(AcGePoint3dArray ptArray);
 
+	static AcDbObjectIdArray CreateRegion(AcDbObjectIdArray curvesId);
+
 	// 加载入模型空间
 	static AcDbObjectId PostToModelSpace(AcDbEntity* newLine);
 };

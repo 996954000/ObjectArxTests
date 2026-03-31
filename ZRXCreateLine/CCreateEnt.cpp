@@ -250,6 +250,55 @@ AcDbObjectId CCreateEnt::CreateSpline(AcGePoint3dArray ptArray, AcGeVector3d sta
 AcDbObjectId CCreateEnt::CreateSpline(AcGePoint3dArray ptArray) {
 	return CCreateEnt::CreateSpline(ptArray, AcGeVector3d(0.0, 0.0, 0.0), AcGeVector3d(0.0, 0.0, 0.0), 4);
 }
+
+// 创建面域
+//Zcad::ErrorStatus createFromCurves(const ZcDbVoidPtrArray& curveSegments,
+//	ZcDbVoidPtrArray& regions);
+AcDbObjectIdArray CCreateEnt::CreateRegion(AcDbObjectIdArray curvesId) {
+
+	AcDbVoidPtrArray curvePtrs;
+
+	AcDbVoidPtrArray regionPtrs;
+	AcDbObjectIdArray regionIds;
+	AcDbEntity* pEnt;
+	AcDbRegion* pRegion;
+
+	// 根据边界id数组获取边界实体指针数组
+	for (auto id : curvesId) {
+		acdbOpenAcDbEntity(pEnt, id, AcDb::kForRead);
+
+		if (pEnt->isKindOf(AcDbCurve::desc()) == Adesk::kTrue) {
+			curvePtrs.append(static_cast<void*>(pEnt));
+		}
+	}
+
+	Acad::ErrorStatus es = AcDbRegion::createFromCurves(curvePtrs, regionPtrs);
+
+	// 将面域添加到模型空间
+	if (es == Acad::eOk){
+		for (auto region : regionPtrs){
+			pRegion = static_cast<AcDbRegion*>(region);
+			pRegion->setDatabaseDefaults();
+
+			AcDbObjectId regionId = CCreateEnt::PostToModelSpace(pRegion);
+			regionIds.append(regionId);
+		}
+	}
+	else {
+		for (auto region : regionPtrs) {
+			delete region;
+		}
+	}
+
+	// 关闭curves
+	for (auto curve : curvePtrs) {
+		pEnt = static_cast<AcDbEntity*>(curve);
+		pEnt->close();
+	}
+
+	return regionIds;
+}
+
 /// <summary>
 /// 将实体添加到模型空间
 /// </summary>

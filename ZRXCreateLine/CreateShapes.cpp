@@ -75,6 +75,44 @@ void CreateSpline() {
 	CCreateEnt::CreateSpline(ptArray, startTangent, endTangent, order);
 }
 
+void CreateRegion() {
+	// 选择集获取用户选中对象
+	ads_name ss;
+	// 提示用户选择对象
+	int rt = acedSSGet(NULL, NULL, NULL, NULL, ss);
+	
+	AcDbObjectIdArray objIds;
+
+	// 根据选中对象获取边界曲线的ObjectIds
+	if (rt == RTNORM){
+		Adesk::Int32 length;
+		acedSSLength(ss, &length);
+
+		for (int i = 0; i <length; i++){
+			ads_name ent;
+			acedSSName(ss, i, ent);
+			AcDbObjectId entId;
+			acdbGetObjectId(entId, ent);
+			objIds.append(entId);
+		}
+	}
+
+	acedSSFree(ss); // 释放选择集
+
+	AcDbObjectIdArray regionIds;
+	regionIds = CCreateEnt::CreateRegion(objIds);
+
+	int number = regionIds.length();
+	if (number > 0)
+	{
+		acutPrintf(_T("\n已经创建%d个面域！"), number);
+	}
+	else
+	{
+		acutPrintf(_T("\n创建0个面域！"));
+	}
+}
+
 void initApp() {
 	acutPrintf(L"\n[HelloZRX] initApp called, registering command...");
 
@@ -135,6 +173,13 @@ void initApp() {
 		CreateSpline);
 
 	acutPrintf(L"\n[CreateSpline] addCommand result: %d", retSpline);
+
+	int retRegion = acedRegCmds->addCommand(L"CreateShape", L"CreateRegion",
+		L"CreateRegion",
+		ACRX_CMD_MODAL,
+		CreateRegion);
+
+	acutPrintf(L"\n[CreateRegion] addCommand result: %d", retRegion);
 }
 
 void unloadApp()
