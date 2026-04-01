@@ -158,18 +158,23 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <ModuleDefinitionFile>Hello.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>Define.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(zrxsdk_dir)library\x64_vc15_unicode_release\lib-x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>ZWCAD.lib;ZwAuto.lib;ZwZrx.lib;ZwDatabase.lib;ZwRx.lib;ZwGeometry.lib;ZwdUI.lib;ZwUI.lib;ZwBase.lib;ZwGs.lib;ZwPAL.lib;ZwTc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCreateEnt.h" />
+    <ClInclude Include="CModifyEnt.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="UserOperation.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="stcArx.h" />
+    <ClInclude Include="stdArx.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCreateEnt.cpp" />
+    <ClCompile Include="CModifyEnt.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="UserOperation.cpp" />
     <ClCompile Include="pch.cpp">
@@ -178,6 +183,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Define.def" />

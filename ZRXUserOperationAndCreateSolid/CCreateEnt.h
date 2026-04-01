@@ -1,15 +1,11 @@
 #pragma once
+#include "stdArx.h"
 
-#include <aced.h>
-#include <rxregsvc.h> 
-
-class UserOperation
+class CCreateEnt
 {
-	void initApp();
-	void unloadApp();
-	
 public:
 	static AcDbObjectId CreateDim(AcGePoint3d xLine1Point, AcGePoint3d xLine2Point, AcGePoint3d dimLinePoint);
+	static AcDbObjectId CreateDimByMouse();
 	static AcDbObjectId PostToModelSpace(AcDbEntity* pEnt);
 };
 

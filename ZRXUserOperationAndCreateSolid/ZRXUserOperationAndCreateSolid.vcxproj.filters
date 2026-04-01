@@ -24,7 +24,16 @@
     <ClInclude Include="UserOperation.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="stcArx.h">
+    <ClInclude Include="stdArx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CCreateEnt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CModifyEnt.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -36,6 +45,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="UserOperation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CCreateEnt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CModifyEnt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
