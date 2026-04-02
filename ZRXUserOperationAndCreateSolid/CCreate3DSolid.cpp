@@ -116,9 +116,13 @@ void CCreate3DSolid::Create3DBooleanBox() {
 	matrix.setTranslation(vec);
 	pSolid2->transformBy(matrix);
 
+	// booleanOper 要求两个实体必须已入库，所以必须先 Post
+	// PostToModelSpace 内部会 close 指针，原指针 post 后不再可用
 	AcDbObjectId pSolid1Id = CCreateEnt::PostToModelSpace(pSolid1);
 	AcDbObjectId pSolid2Id = CCreateEnt::PostToModelSpace(pSolid2);
 
+	// 用 id 重新打开：acdbOpenObject 是模板函数，可直接推导目标类型，省去 static_cast
+	// acdbOpenAcDbEntity 也可以，但返回 AcDbEntity*，需要手动强转
 	acdbOpenObject(pSolid1, pSolid1Id, kForWrite);
 	acdbOpenObject(pSolid2, pSolid2Id, kForWrite);
 
@@ -130,8 +134,9 @@ void CCreate3DSolid::Create3DBooleanBox() {
 		return;
 	}
 	
+	// booleanOper 会消耗 pSolid2（将其 ACIS 体置空），isNull() 可验证
 	assert(pSolid2->isNull());
-
+	// 必须从数据库中显式删除 pSolid2，erase 只对入库实体有效（transient 对象不能 erase）
 	pSolid2->erase();
 
 	pSolid1->close();
