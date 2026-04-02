@@ -164,6 +164,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCreate3DSolid.h" />
     <ClInclude Include="CCreateEnt.h" />
     <ClInclude Include="CModifyEnt.h" />
     <ClInclude Include="framework.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCreate3DSolid.cpp" />
     <ClCompile Include="CCreateEnt.cpp" />
     <ClCompile Include="CModifyEnt.cpp" />
     <ClCompile Include="dllmain.cpp" />

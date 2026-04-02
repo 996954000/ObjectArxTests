@@ -50,3 +50,7 @@ AcDbObjectIdArray Util::GetAllLineInBlockTable() {
 
 	return acdbObjArray;
 }
+
+double Util::Pi() {
+	return atan(1.0) * 4.0;
+}

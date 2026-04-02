@@ -6,5 +6,6 @@ class Util
 public:
 	static bool CanFindLayerByName(const ZTCHAR* layerName);
 	static AcDbObjectIdArray GetAllLineInBlockTable();
+	static double Pi();
 };
 

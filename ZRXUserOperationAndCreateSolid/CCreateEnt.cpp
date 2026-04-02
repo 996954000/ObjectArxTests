@@ -1,6 +1,16 @@
 ﻿#include "pch.h"
 #include "CCreateEnt.h"
 
+AcDbObjectId CCreateEnt::CreateCircle(AcGePoint3d centerPoint, AcGeVector3d normalVector, double radius) {
+
+	AcDbCircle* pCircle = new AcDbCircle(centerPoint, normalVector, radius);
+	return CCreateEnt::PostToModelSpace(pCircle);
+}
+
+AcDbObjectId CCreateEnt::CreatePolyline(AcGePoint3dArray pointArray) {
+	AcDb3dPolyline* polyline3d = new AcDb3dPolyline(k3dSimplePoly, pointArray);
+	return CCreateEnt::PostToModelSpace(polyline3d);
+}
 
 void CreateDim() {
 	AcGePoint3d xLine1Point(0.0, 0.0, 0.0), xLine2Point(50.0, 50.0, 0.0), dimLinePoint(25.0, 25.0, 0.0);
@@ -17,7 +27,6 @@ AcDbObjectId CCreateEnt::CreateDim(AcGePoint3d xLine1Point, AcGePoint3d xLine2Po
 	AcDbAlignedDimension* pAlignedDim = new AcDbAlignedDimension(xLine1Point, xLine2Point, dimLinePoint, _T("直线标注"), AcDbObjectId::kNull);
 	return PostToModelSpace(pAlignedDim);
 }
-
 
 
 AcDbObjectId CCreateEnt::CreateDimByMouse() {
@@ -77,6 +86,58 @@ AcDbObjectId CCreateEnt::CreateDimByMouse() {
 
 	return dimId;
 }
+
+// 创建面域
+//Zcad::ErrorStatus createFromCurves(const ZcDbVoidPtrArray& curveSegments,
+//	ZcDbVoidPtrArray& regions);
+AcDbObjectIdArray CCreateEnt::CreateRegion(AcDbObjectIdArray curvesId) {
+
+	AcDbVoidPtrArray curvePtrs;
+
+	AcDbVoidPtrArray regionPtrs;
+	AcDbObjectIdArray regionIds;
+	AcDbEntity* pEnt;
+	AcDbRegion* pRegion;
+
+	// 根据边界id数组获取边界实体指针数组
+	for (auto id : curvesId) {
+		acdbOpenAcDbEntity(pEnt, id, AcDb::kForRead);
+
+		if (pEnt->isKindOf(AcDbCurve::desc()) == Adesk::kTrue) {
+			curvePtrs.append(static_cast<void*>(pEnt));
+		}
+	}
+
+	Acad::ErrorStatus es = AcDbRegion::createFromCurves(curvePtrs, regionPtrs);
+
+	// 将面域添加到模型空间
+	if (es == Acad::eOk) {
+		for (auto region : regionPtrs) {
+			pRegion = static_cast<AcDbRegion*>(region);
+			pRegion->setDatabaseDefaults();
+
+			AcDbObjectId regionId = CCreateEnt::PostToModelSpace(pRegion);
+			acutPrintf(L"\nRegion Post to Model Space");
+			regionIds.append(regionId);
+		}
+	}
+	else {
+		acutPrintf(L"\nRegion Post fail");
+
+		for (auto region : regionPtrs) {
+			delete region;
+		}
+	}
+
+	// 关闭curves
+	for (auto curve : curvePtrs) {
+		pEnt = static_cast<AcDbEntity*>(curve);
+		pEnt->close();
+	}
+
+	return regionIds;
+}
+
 
 
 // post to 模型空间
