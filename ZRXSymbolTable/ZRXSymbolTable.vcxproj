@@ -171,6 +171,7 @@
     <ClInclude Include="CTextStyle.h" />
     <ClInclude Include="CTextStyleOpts.h" />
     <ClInclude Include="CUtil.h" />
+    <ClInclude Include="CViewTableOpts.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="SymbolTable.h" />
     <ClInclude Include="pch.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="CTextStyle.cpp" />
     <ClCompile Include="CTextStyleOpts.cpp" />
     <ClCompile Include="CUtil.cpp" />
+    <ClCompile Include="CViewTableOpts.cpp" />
     <ClCompile Include="SymbolTable.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -3,6 +3,7 @@
 #include "CLayerTableOpts.h"
 #include "CTextStyleOpts.h"
 #include "CDimStyleOpts.h"
+#include "CViewTableOpts.h"
 
 void AddLayerTable()
 {
@@ -32,6 +33,10 @@ void AddTextStyle(){
 void AddDimStyle(){
 	CDimStyleOpts::AddDimStyle();
 }
+
+void ZoomCurViewScale(){
+	CViewTableOpts::ZoomScale();
+}	
 
 void initApp()
 {
@@ -77,6 +82,12 @@ void initApp()
 		ACRX_CMD_MODAL,
 		AddDimStyle);
 	acutPrintf(L"\n[AddDimStyle] addCommand result: %d", retAddDimStyle);
+
+	int retZoomCurViewScale = acedRegCmds->addCommand(L"SymTablesOperation", L"ZoomCurViewScale",
+		L"ZoomCurViewScale",
+		ACRX_CMD_MODAL,
+		ZoomCurViewScale);
+	acutPrintf(L"\n[ZoomCurViewScale] addCommand result: %d", retZoomCurViewScale);
 }
 
 void unloadApp()
