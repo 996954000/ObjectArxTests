@@ -1,0 +1,330 @@
+﻿#include "pch.h"
+#include "HCreateShapes.h"
+#include "CCreateEnt.h"
+#include "CModifyEnt.h"
+#include "CreateShapes.h"
+
+
+void CreateLine() {
+	AcDbObjectId lineId;
+
+	lineId = CCreateEnt::CreateLine(AcGePoint3d(0, 0, 0), AcGePoint3d(100, 100, 0));
+
+	CModifyEnt::ChangeLineColor(lineId, 1);
+}
+
+void CreateCircle() {
+	CCreateEnt::CreateCircle(AcGePoint3d(0, 0, 0), AcGeVector3d(0, 0, 1), 20);
+	CCreateEnt::CreateCircle(AcGePoint3d(100, 100, 0), 25);
+	CCreateEnt::CreateCircle(AcGePoint2d(0, 0), AcGePoint2d(100, 0), AcGePoint2d(100, 100));
+}
+
+void CreateRec() {
+	AcGePoint2d pt1(0, 0);
+	AcGePoint2d pt2(100, 0);
+	double angele = 90.0;
+
+	CCreateEnt::CreateArc(pt1, pt2, angele);
+}
+
+int getRand(int min, int max) {
+	return (rand() % (max - min + 1)) + min;
+}
+
+void CreatePolyLine() {
+	AcGePoint2dArray ptArray;
+	srand(time(0));
+	for (int i = 0; i < 5; i++) {
+		ptArray.append(AcGePoint2d(i * getRand(1, 20), i * getRand(1, 30)));
+	}
+
+	CCreateEnt::CreatePolyline(ptArray, 10);
+}
+
+void CreatePolyLine3D() {
+	AcGePoint3dArray ptArray;
+	srand(time(0));
+	for (int i = 0; i < 5; i++) {
+		ptArray.append(AcGePoint3d(i * getRand(1, 20), i * getRand(1, 30), i * getRand(1, 40)));
+	}
+	CCreateEnt::CreatePolyline3D(ptArray);
+}
+
+void CreatePolygon() {
+	AcGePoint3d basePt(0, 0, 0);
+	int sideNum = 5;
+	double radius = 50;
+	double rotation = 0;
+	double width = 5;
+	CCreateEnt::CreatePolygon(basePt, sideNum, radius, rotation, width);
+}
+
+void CreateEllipse() {
+	CCreateEnt::CreateEllipse(AcGePoint2d(0.0, 0.0), AcGePoint2d(100.0, 50.0));
+}
+
+void CreateSpline() {
+	AcGePoint3dArray ptArray;
+	int order = 5;
+
+	srand(time(0));
+	for (int i = 0; i < order; i++) {
+		ptArray.append(AcGePoint3d(i * getRand(1, 20), i * getRand(1, 30), i * getRand(1, 40)));
+	}
+	AcGeVector3d startTangent(1, 0, 0);
+	AcGeVector3d endTangent(0, 1, 0);
+	CCreateEnt::CreateSpline(ptArray, startTangent, endTangent, order);
+}
+
+// 创建面域
+void CreateRegion() {
+	// 选择集获取用户选中对象
+	ads_name ss;
+	// 提示用户选择对象
+	int rt = acedSSGet(NULL, NULL, NULL, NULL, ss);
+	
+	AcDbObjectIdArray objIds;
+
+	// 根据选中对象获取边界曲线的ObjectIds
+	if (rt == RTNORM){
+		Adesk::Int32 length;
+		acedSSLength(ss, &length);
+
+		for (int i = 0; i <length; i++){
+			ads_name ent;
+			acedSSName(ss, i, ent);
+			AcDbObjectId entId;
+			acdbGetObjectId(entId, ent);
+			objIds.append(entId);
+		}
+	}
+
+	acedSSFree(ss); // 释放选择集
+
+	AcDbObjectIdArray regionIds;
+	regionIds = CCreateEnt::CreateRegion(objIds);
+
+	int number = regionIds.length();
+	if (number > 0)
+	{
+		acutPrintf(_T("\n已经创建%d个面域！"), number);
+	}
+	else
+	{
+		acutPrintf(_T("\n创建0个面域！"));
+	}
+}
+
+void CreateText() {
+	CCreateEnt::CreateText(AcGePoint3d(0.0, 0.0, 0.0), _T("Text文本"), 500, 0.0);
+	CCreateEnt::CreateMText(_T("MText多行文本"));
+}
+
+void CreateHatch() {
+	ads_name ss;
+	int rt = acedSSGet(NULL, NULL, NULL, NULL, ss);
+
+	AcDbObjectIdArray objIds;
+
+	// 根据选中对象获取边界曲线的ObjectIds
+	if (rt == RTNORM) {
+		Adesk::Int32 length;
+		acedSSLength(ss, &length);
+
+		for (int i = 0; i < length; i++) {
+			ads_name ent;
+			acedSSName(ss, i, ent);
+			AcDbObjectId entId;
+			acdbGetObjectId(entId, ent);
+			objIds.append(entId);
+		}
+	}
+
+	acedSSFree(ss); // 释放选择集
+
+	CCreateEnt::CreateHatch(objIds, _T("SOLID"), true);
+}
+
+void CreateAlignedDim() {
+
+	CCreateEnt::CreateDimAligned(AcGePoint3d(0.0, 0.0, 0.0), AcGePoint3d(50.0, 50.0, 0.0), AcGePoint3d(25.0, 25.0, 25.0), _T("对齐标注"),
+		AcGeVector3d(10.0, 10.0, 0.0));
+}
+
+void CreateRotateDim() {
+	CCreateEnt::CreateDimRotated(45.0, AcGePoint3d(0.0, 0.0, 0.0), AcGePoint3d(-50.0, -50.0, 0.0), AcGePoint3d(-25.0, -25.0, 25.0), _T("转角标注"));
+}
+
+void CreateRadialDim() {
+	AcGePoint3d center(0.0, 0.0, 0.0);
+	AcGePoint3d chordPoint(50.0, 20.0, 0.0);
+	CCreateEnt::CreateDimRadial(center, chordPoint, 5.0, _T("半径标注"));
+}
+
+void CreateDiametricDim() {
+	AcGePoint3d chordPoint(0.0, 0.0, 0.0);
+	AcGePoint3d farChordPoint(30.0, 20.0, 0.0);
+	CCreateEnt::CreateDimDiametric(chordPoint, farChordPoint, 5.0, _T("直径标注"));
+}
+
+void CreateAngularDim() {
+	// 使用CreateDim2Angular函数生成角度标注
+	CCreateEnt::CreateDim2Angular(
+		AcGePoint3d(0.0, 0.0, 0.0),      // xLine1Start
+		AcGePoint3d(60.0, 0.0, 0.0),      // xLine1End
+		AcGePoint3d(0.0, 0.0, 0.0),      // xLine2Start
+		AcGePoint3d(0.0, 60.0, 0.0),      // xLine2End
+		AcGePoint3d(20.0, 20.0, 0.0),     // arcPoint
+		_T("两线角度标注")                 // dimText
+	);
+    // 使用CreateDim2Angular函数通过三点生成角度标注
+    // 例如，三点分别为A(0,0,0), B(60,0,0), C(0,60,0)
+    // 以A为角点，AB, AC两条边
+    CCreateEnt::CreateDim2Angular(
+        AcGePoint3d(0.0, 0.0, 0.0),       // xLine1Start: A
+        AcGePoint3d(60.0, 0.0, 0.0),      // xLine1End:   B
+        AcGePoint3d(0.0, 0.0, 0.0),       // xLine2Start: A
+        AcGePoint3d(0.0, 60.0, 0.0),      // xLine2End:   C
+        AcGePoint3d(25.0, 25.0, 0.0),     // arcPoint: 用于确定角度弧线的位置
+        _T("三点角度标注")                 // dimText
+    );
+}
+
+void initApp() {
+	acutPrintf(L"\n[HelloZRX] initApp called, registering command...");
+
+	// 命令组名称、命令的国际名称、命令的本国名称、命令的类型和指向实现函数的指针
+	// 最后的参数需要是无返回值无参数的函数指针
+	AddCreatShapesCommand();
+
+	int retAlignedDim = acedRegCmds->addCommand(L"CreateDims", L"CreateAlignedDim",
+		L"CreateAlignedDim",
+		ACRX_CMD_MODAL,
+		CreateAlignedDim);
+
+	int retRotateDim = acedRegCmds->addCommand(L"CreateDims", L"CreateRotateDim",
+		L"CreateRotateDim",
+		ACRX_CMD_MODAL,
+		CreateRotateDim);
+
+	int retRadialDim = acedRegCmds->addCommand(L"CreateDims", L"CreateRadialDim",
+		L"CreateRadialDim",
+		ACRX_CMD_MODAL,
+		CreateRadialDim);
+
+	int retDiametricDim = acedRegCmds->addCommand(L"CreateDims", L"CreateDiametricDim",
+		L"CreateDiametricDim",
+		ACRX_CMD_MODAL,
+		CreateDiametricDim);
+
+	int retAngularDim = acedRegCmds->addCommand(L"CreateDims", L"CreateAngularDim",
+		L"CreateAngularDim",
+		ACRX_CMD_MODAL,
+		CreateAngularDim);
+}
+
+void AddCreatShapesCommand()
+{
+	int retLine = acedRegCmds->addCommand(L"CreateShape", L"CreateLine",
+		L"CreateLine",
+		ACRX_CMD_MODAL,
+		CreateLine);
+
+	acutPrintf(L"\n[CreateLine] addCommand result: %d", retLine);
+
+	int retCircle = acedRegCmds->addCommand(L"CreateShape", L"CreateCircle",
+		L"CreateCircle",
+		ACRX_CMD_MODAL,
+		CreateCircle);
+
+	acutPrintf(L"\n[CreateCircle] addCommand result: %d", retCircle);
+
+	int retRec = acedRegCmds->addCommand(L"CreateShape", L"CreateRec",
+		L"CreateRec",
+		ACRX_CMD_MODAL,
+		CreateRec);
+
+	acutPrintf(L"\n[CreateRec] addCommand result: %d", retRec);
+
+	int retPolyLine = acedRegCmds->addCommand(L"CreateShape", L"CreatePolyLine",
+		L"CreatePolyLine",
+		ACRX_CMD_MODAL,
+		CreatePolyLine);
+
+	acutPrintf(L"\n[CreatePolyLine] addCommand result: %d", retPolyLine);
+
+	int retPolyLine3D = acedRegCmds->addCommand(L"CreateShape", L"CreatePolyLine3D",
+		L"CreatePolyLine3D",
+		ACRX_CMD_MODAL,
+		CreatePolyLine3D);
+
+	acutPrintf(L"\n[CreatePolyLine3D] addCommand result: %d", retPolyLine3D);
+
+	int retPolygon = acedRegCmds->addCommand(L"CreateShape", L"CreatePolygon",
+		L"CreatePolygon",
+		ACRX_CMD_MODAL,
+		CreatePolygon);
+
+	acutPrintf(L"\n[CreatePolygon] addCommand result: %d", retPolygon);
+
+	int retEllipse = acedRegCmds->addCommand(L"CreateShape", L"CreateEllipse",
+		L"CreateEllipse",
+		ACRX_CMD_MODAL,
+		CreateEllipse);
+
+	acutPrintf(L"\n[CreateEllipse] addCommand result: %d", retEllipse);
+
+	int retSpline = acedRegCmds->addCommand(L"CreateShape", L"CreateSpline",
+		L"CreateSpline",
+		ACRX_CMD_MODAL,
+		CreateSpline);
+
+	acutPrintf(L"\n[CreateSpline] addCommand result: %d", retSpline);
+
+	int retRegion = acedRegCmds->addCommand(L"CreateShape", L"CreateRegion",
+		L"CreateRegion",
+		ACRX_CMD_MODAL,
+		CreateRegion);
+
+	acutPrintf(L"\n[CreateRegion] addCommand result: %d", retRegion);
+
+	int retText = acedRegCmds->addCommand(L"CreateShape", L"CreateText",
+		L"CreateText",
+		ACRX_CMD_MODAL,
+		CreateText);
+
+	acutPrintf(L"\n[CreateText] addCommand result: %d", retText);
+
+	int retHatch = acedRegCmds->addCommand(L"CreateShape", L"CreateHatch",
+		L"CreateHatch",
+		ACRX_CMD_MODAL,
+		CreateHatch);
+
+	acutPrintf(L"\n[CreateHatch] addCommand result: %d", retHatch);
+}
+
+void unloadApp()
+{
+	//删除命令组
+	acedRegCmds->removeGroup(L"CreateShape");
+	acedRegCmds->removeGroup(L"CreateDims");
+}
+
+extern "C" AcRx::AppRetCode
+acrxEntryPoint(AcRx::AppMsgCode msg, void* pkt)
+{
+	switch (msg)
+	{
+	case AcRx::kInitAppMsg:
+		acrxDynamicLinker->unlockApplication(pkt);
+		acrxRegisterAppMDIAware(pkt);
+		initApp();
+		break;
+	case AcRx::kUnloadAppMsg:
+		unloadApp();
+		break;
+	default:
+		break;
+	}
+	return AcRx::kRetOK;
+}

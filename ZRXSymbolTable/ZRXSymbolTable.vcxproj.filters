@@ -45,6 +45,18 @@
     <ClInclude Include="CViewTableOpts.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CViewPortOpts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CUCSOpts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CCreateEnt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CCalculation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -69,6 +81,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CViewTableOpts.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CViewPortOpts.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CUCSOpts.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CCreateEnt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CCalculation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

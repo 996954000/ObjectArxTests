@@ -4,6 +4,8 @@
 #include "CTextStyleOpts.h"
 #include "CDimStyleOpts.h"
 #include "CViewTableOpts.h"
+#include "CViewPortOpts.h"
+#include "CUCSOpts.h"
 
 void AddLayerTable()
 {
@@ -37,6 +39,26 @@ void AddDimStyle(){
 void ZoomCurViewScale(){
 	CViewTableOpts::ZoomScale();
 }	
+
+void CreateNewUCS(){
+	CUCSOpts::CreateNewUCS();
+}
+
+void SetCurUCS(){
+	CUCSOpts::SetCurUCS();
+}
+
+void MoveUCSOrigin(){
+	CUCSOpts::MoveUCSOrigin();
+}
+
+void AddEntityInUCS(){
+	CUCSOpts::AddEntityInUCS();
+}
+
+void Create4ViewPorts(){
+	CViewPortOpts::Create4ViewPorts();
+}
 
 void initApp()
 {
@@ -88,6 +110,37 @@ void initApp()
 		ACRX_CMD_MODAL,
 		ZoomCurViewScale);
 	acutPrintf(L"\n[ZoomCurViewScale] addCommand result: %d", retZoomCurViewScale);
+
+	// UCS相关命令
+	int retCreateNewUCS = acedRegCmds->addCommand(L"SymTablesOperation", L"CreateNewUCS",
+		L"CreateNewUCS",
+		ACRX_CMD_MODAL,
+		CreateNewUCS);
+	acutPrintf(L"\n[CreateNewUCS] addCommand result: %d", retCreateNewUCS);
+
+	int retSetCurUCS = acedRegCmds->addCommand(L"SymTablesOperation", L"SetCurUCS",
+		L"SetCurUCS",
+		ACRX_CMD_MODAL,
+		SetCurUCS);
+	acutPrintf(L"\n[SetCurUCS] addCommand result: %d", retSetCurUCS);
+
+	int retMoveUCSOrigin = acedRegCmds->addCommand(L"SymTablesOperation", L"MoveUCSOrigin",
+		L"MoveUCSOrigin",
+		ACRX_CMD_MODAL,
+		MoveUCSOrigin);
+	acutPrintf(L"\n[MoveUCSOrigin] addCommand result: %d", retMoveUCSOrigin);
+
+	int retAddEntityInUCS = acedRegCmds->addCommand(L"SymTablesOperation", L"AddEntityInUCS",
+		L"AddEntityInUCS",
+		ACRX_CMD_MODAL,
+		AddEntityInUCS);
+	acutPrintf(L"\n[AddEntityInUCS] addCommand result: %d", retAddEntityInUCS);
+
+	int retCreate4ViewPorts = acedRegCmds->addCommand(L"SymTablesOperation", L"CreateViewPorts",
+		L"CreateViewPorts",
+		ACRX_CMD_MODAL,
+		Create4ViewPorts);
+	acutPrintf(L"\n[Create4ViewPorts] addCommand result: %d", retCreate4ViewPorts);
 }
 
 void unloadApp()

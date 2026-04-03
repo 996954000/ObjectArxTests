@@ -166,11 +166,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CCalculation.h" />
+    <ClInclude Include="CCreateEnt.h" />
     <ClInclude Include="CDimStyleOpts.h" />
     <ClInclude Include="CLayerTableOpts.h" />
     <ClInclude Include="CTextStyle.h" />
     <ClInclude Include="CTextStyleOpts.h" />
+    <ClInclude Include="CUCSOpts.h" />
     <ClInclude Include="CUtil.h" />
+    <ClInclude Include="CViewPortOpts.h" />
     <ClInclude Include="CViewTableOpts.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="SymbolTable.h" />
@@ -178,11 +182,15 @@
     <ClInclude Include="stdArx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CCalculation.cpp" />
+    <ClCompile Include="CCreateEnt.cpp" />
     <ClCompile Include="CDimStyleOpts.cpp" />
     <ClCompile Include="CLayerTableOpts.cpp" />
     <ClCompile Include="CTextStyle.cpp" />
     <ClCompile Include="CTextStyleOpts.cpp" />
+    <ClCompile Include="CUCSOpts.cpp" />
     <ClCompile Include="CUtil.cpp" />
+    <ClCompile Include="CViewPortOpts.cpp" />
     <ClCompile Include="CViewTableOpts.cpp" />
     <ClCompile Include="SymbolTable.cpp" />
     <ClCompile Include="pch.cpp">
