@@ -30,6 +30,15 @@
     <ClInclude Include="CCommandTests.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CUserInteracts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CCalculation.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CCreateEnt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -39,6 +48,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CCommandTests.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CUserInteracts.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CCalculation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CCreateEnt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

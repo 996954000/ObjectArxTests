@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ZRXADSRX.h"
 #include "CCommandTests.h"
+#include "CUserInteracts.h"
 
 void CommandForCreateCircle()
 {
@@ -15,6 +16,15 @@ void CmdForCreateCircle()
 void SelectedEntInfo()
 {
 	CCommandTests::SelectedEntInfo();
+}
+
+void CreatePolyLineByUser()
+{
+	CUserInteracts::CreatePolyLineByUser();
+}
+
+void KeyWordsTest(){
+	CUserInteracts::KeyWordsTest();
 }
 
 void initApp()
@@ -37,6 +47,18 @@ void initApp()
 		ACRX_CMD_MODAL,
 		SelectedEntInfo);
 	acutPrintf(L"\n[ZRXADSRX] addCommand result: %d", retSelectedEntInfo);
+
+	int retCreatePolyLineByUser = acedRegCmds->addCommand(L"ADSRX", L"CreatePolyLineByUser",
+		L"CreatePolyLineByUser",
+		ACRX_CMD_MODAL,
+		CreatePolyLineByUser);
+	acutPrintf(L"\n[ZRXADSRX] addCommand result: %d", retCreatePolyLineByUser);
+
+	int retKeyWordsTest = acedRegCmds->addCommand(L"ADSRX", L"KeyWordsTest",
+		L"KeyWordsTest",
+		ACRX_CMD_MODAL,
+		KeyWordsTest);
+	acutPrintf(L"\n[ZRXADSRX] addCommand result: %d", retKeyWordsTest);
 }
 
 void unloadApp()
