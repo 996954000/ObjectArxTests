@@ -69,3 +69,14 @@ void CUserInteracts::KeyWordsTest() {
 		break;
 	}
 }
+
+// 文件选择框测试
+void CUserInteracts::SelectFileTest() {
+	struct resbuf* fileName;
+	fileName = zcutNewRb(RTSTR);
+	if (acedGetFileD(L"选择文件", L"C:\\", L"dwg;dxf;*", 0, fileName) == RTNORM)
+	{
+		acedAlert(fileName->resval.rstring);
+	}
+	acutRelRb(fileName);
+}

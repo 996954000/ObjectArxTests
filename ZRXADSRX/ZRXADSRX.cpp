@@ -27,6 +27,10 @@ void KeyWordsTest(){
 	CUserInteracts::KeyWordsTest();
 }
 
+void SelectFileTest(){
+	CUserInteracts::SelectFileTest();
+}
+
 void initApp()
 {
 	acutPrintf(L"\n[ZRXADSRX] initApp called, registering command...");
@@ -59,6 +63,12 @@ void initApp()
 		ACRX_CMD_MODAL,
 		KeyWordsTest);
 	acutPrintf(L"\n[ZRXADSRX] addCommand result: %d", retKeyWordsTest);
+
+	int retSelectFileTest = acedRegCmds->addCommand(L"ADSRX", L"SelectFileTest",
+		L"SelectFileTest",
+		ACRX_CMD_MODAL,
+		SelectFileTest);
+	acutPrintf(L"\n[ZRXADSRX] addCommand result: %d", retSelectFileTest);
 }
 
 void unloadApp()
