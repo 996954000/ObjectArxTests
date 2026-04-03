@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ZRXSymbolTable.vcxproj" Id="b130e26b-baad-4630-8d4f-d043f6c846c8" />
+</Solution>
