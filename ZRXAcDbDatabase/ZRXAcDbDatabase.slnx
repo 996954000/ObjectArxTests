@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ZRXAcDbDatabase.vcxproj" Id="29b5c264-9d2a-4322-8be4-b183275a19e4" />
+</Solution>
