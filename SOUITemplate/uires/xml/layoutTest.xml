@@ -1,0 +1,77 @@
+<SOUI name="layoutTest" title="@string/mainTitle" width="600" height="400" appWnd="0" margin="20,5,5,5"  resizable="1" translucent="1" wndType="normal">
+	<root skin="_skin.sys.wnd.bkgnd">
+		<caption pos="0,0,-0,30">
+			<text pos="11,9">@string/mainTitle</text>
+			<imgbtn name="btn_close" skin="_skin.sys.btn.close"    pos="-45,0" tip="close" animate="1"/>
+			<imgbtn name="btn_max" skin="_skin.sys.btn.maximize"  pos="-83,0" animate="1" />
+			<imgbtn name="btn_restore" skin="_skin.sys.btn.restore"  pos="-83,0" show="0" animate="1" />
+			<imgbtn name="btn_min" skin="_skin.sys.btn.minimize" pos="-121,0" animate="1" />
+		</caption>
+		
+		
+			<!--left top right bottom 四边基于父窗口左上作偏移-->
+		<window id="999" pos ="10, 10, 100, 100" colorBkgnd="#0000ff"> <!--蓝-->
+		</window>
+		
+			<!--最终几何上必须是 左 ≤ 右、上 ≤ 下，否则容易变成非法/零面积矩形，看起来像不显示-->
+		<window pos ="-10, -10, -100, -100" colorBkgnd="#00ffff"> <!--不显示-->
+		</window>
+		
+		<!--负号则基于父窗口右下作偏移-->
+		<window pos ="-100, -100, -10, -10" colorBkgnd="#00ffff"> <!--青-->
+		</window>
+		
+			<!--若只提供部分几何信息，则需要通过 width 和 height 补充-->
+			<!--width 和 height 为 full 时，代表高度或者宽度和父窗口的客户区大小相等。
+			-1 代表根据窗口内容自动计算窗口大小。
+			非负整数直接指定窗口大小-->
+		<window pos ="{20, {0" width = "90" height ="90" colorBkgnd="#ff0000">	<!--红-->
+		</window>
+
+		<!--offset 在 pos 属性完成坐标定位后再将坐标进行偏移，用于调整窗口位置，偏移量以控件最后的大小为单位进行平移，
+			-1, -1 代表窗口位置向左上移动一个窗口宽度或者高度
+			@ 效果和 width 以及 height效果相同	-->
+		<window pos ="{20, |0, @90, @90" offset ="-1, -1" colorBkgnd="#ff00ff">	<!--紫-->
+		</window>
+
+		<!--pos 坐标对应控件的左上角。但有时候你想说「这个坐标是我控件的中心」或者「右上角」，就可以用 pos2type 属性来指定  -->
+		<!--<window pos ="{20, {0, @90, @90" pos2type="rightbottom" colorBkgnd="#00ff00">	--><!--绿--><!--
+		</window>--> <!--不好用 注释掉 带过-->
+		<!--pos2type 是 2014 年前的旧写法，只能是 0、-0.5、-1 这几档；
+		offset 是 2014 年后新增的，可以写任意小数，更灵活；
+		两个属性同时写只有最后一个生效，推荐直接用 offset，pos2type 只是为了向后兼容。-->
+
+
+		<!--SOUI 2.5.1.1 开始支持线性布局(LinearLayout).
+		vbox 为垂直线性布局, hbox 为水平线性布局
+		
+		gravity 属性, 用来指定子窗口的默认排列模式 [从哪往哪排]
+		vbox: left(默认), center, right;
+		hbox: top(默认), center, bottom.
+		
+		线性布局中的子窗口 pos 属性没有意义, 一般直接指定 size="width,height",
+		width/height 值: -1 代表 wrap_content, -2 代表 match_parent
+		
+		使用 extend="left,top,right,bottom", extend_left, extend_top, extend_right,
+		extend_bottom 来指定间距. (相当于 android 的 margin)-->
+		<window pos ="|20, |0, @100, @90" layout="hbox">	<!--窗口虽然不会截断按钮的显示 但会截掉按钮的点击区域-->
+				<button size="100,30" skin="skin_btn_round">按钮1</button>
+				<button size="100,30" extend_left="0" skin="skin_btn_round_imgframe">按钮2</button>
+				<button size="100,30" extend_left="10" skin="skin_my_btn">按钮3</button>
+		</window>
+
+		<!--相对于特定兄弟窗口进行布局
+		被参考窗口（假定为窗口 A）必须要指定窗口的 ID 属性，必须是ID name不行
+		当前窗口指定pos时加上 
+		sib.left@999:    
+		sib.bottom@999: 
+		用来指定这两个坐标是相对于被引用窗口的 left,bottom 的值-->
+		<window pos ="sib.left@999:100, sib.bottom@999:10, @100, @25" colorBkgnd="#008546" skin="skin_header_bg">
+		</window> <!--草绿-->
+
+		<include src="layout:XML_PAGE_LAYOUT">
+		</include>
+
+		<text pos ="160, 400" class="boldSongText"> styleText </text>
+	</root>
+</SOUI>

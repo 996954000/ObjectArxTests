@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="SOUITemplate.vcxproj" Id="39d71797-e835-4ccb-ab5e-9f0e3567f5a8" />
+</Solution>
