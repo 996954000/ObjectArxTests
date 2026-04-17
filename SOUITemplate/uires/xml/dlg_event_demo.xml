@@ -1,0 +1,17 @@
+<SOUI name="eventDemoWnd" title="事件冒泡演示" width="720" height="420" appWnd="0" margin="20,5,5,5" resizable="1" translucent="1" wndType="normal">
+	<root skin="_skin.sys.wnd.bkgnd">
+		<caption pos="0,0,-0,30">
+			<text pos="11,9">EVT_CMD：EVENT_MAP 与 subscribeEvent / bubbleUp</text>
+			<imgbtn name="btn_close" skin="_skin.sys.btn.close" pos="-45,0" tip="close" animate="1"/>
+		</caption>
+
+		<text pos="10,38" colorText="#333333">左：情况一（不阻断）；右：情况二（子控件 subscribeEvent 设 bubbleUp=FALSE）。SOUI 子控件 EVT_CMD 默认直达宿主，卡片层需由子控件侧转发到父 panel 的 EventSet 才会触发 panel 的 subscribeEvent。</text>
+
+		<!-- 情况二 -->
+		<text pos="370,85" colorText="#935116">情况二：subscribeEvent 阻断冒泡</text>
+		<div name="panel_card_block" pos="370,105,710,220" colorBkgnd="#FDEBD0">
+			<text pos="10,8,-10,28" colorText="#935116">panel_card_block（卡片容器）</text>
+			<button class="normalbtn" name="btn_fav_block" pos="170,36,-10,66">收藏</button>
+		</div>
+	</root>
+</SOUI>

@@ -10,6 +10,7 @@
 		<window pos="5,30,-5,-5">
 			<text pos="|0,|0" pos2type="center" colorText="#ff0000">Hellow World! UI? Just so so!</text>
 			<button class ="normalbtn" pos="|-50,[20,@100,@30" name="btn_msgbox">show msg box</button>
+			<button class ="normalbtn" pos="|-50,[55,@160,@30" name="btn_event_demo">事件冒泡演示</button>
 		</window>
 	</root>
 </SOUI>

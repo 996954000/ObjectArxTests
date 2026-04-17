@@ -6,6 +6,7 @@
 	<file name="XML_MAINWND" path="xml\dlg_main.xml" />
 	<file name="XML_LAYOUT_TEST" path="xml\layoutTest.xml" />
 	<file name="XML_PAGE_LAYOUT" path="xml\page_layout.xml" />
+	<file name="XML_EVENT_DEMO" path="xml\dlg_event_demo.xml" />
 </LAYOUT>
 	<IMG>
 		<file name="btn_round_1" path="image\btn_round_1.png"/>

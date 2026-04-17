@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "CLayoutTestWnd.h"
+#include "CEventDemoWnd.h"
 
 class CMainWnd : public SHostWnd
 {
@@ -50,6 +51,12 @@ public:
 		pWnd->ShowWindow(SW_SHOWNORMAL);
 	}
 
+	void OnBtnEventDemo()
+	{
+		CEventDemoWnd* pWnd = new CEventDemoWnd();
+		pWnd->DoModal();
+	}
+
 					// HANDLER 必须加这个参数
 	void OnBtnLeave(EventArgs* pBase)
 	{
@@ -72,6 +79,7 @@ protected:
 		EVENT_NAME_COMMAND(L"btn_max", OnMaximize)
 		EVENT_NAME_COMMAND(L"btn_restore", OnRestore)
 		EVENT_NAME_COMMAND(L"btn_msgbox", OnBtnMsgBox)
+		EVENT_NAME_COMMAND(L"btn_event_demo", OnBtnEventDemo)
 		EVENT_NAME_HANDLER(L"btn_msgbox", EVT_MOUSE_LEAVE, OnBtnLeave)
 		EVENT_MAP_END()
 		//窗口消息处理映射表

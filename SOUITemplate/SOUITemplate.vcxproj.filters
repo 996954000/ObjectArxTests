@@ -39,6 +39,9 @@
     <ClInclude Include="CMainWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CEventDemoWnd.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="CLayoutTestWnd.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -48,6 +51,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CMainWnd.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CEventDemoWnd.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CLayoutTestWnd.cpp">
@@ -73,6 +79,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Xml Include="uires\xml\dlg_event_demo.xml">
+      <Filter>uires\xml</Filter>
+    </Xml>
     <Xml Include="uires\xml\dlg_main.xml">
       <Filter>uires\xml</Filter>
     </Xml>
